@@ -1,3 +1,17 @@
-src/__pycache__/
-src/rolypoly/__pycache__/
-rolypoly.egg-info/
+# Ignore file template for Git
+
+# Ignore compiled Python files
+*.pyc
+__pycache__/
+
+# Ignore generated distribution files
+*.egg-info/
+
+# Ignore IDE and editor files
+.idea/
+.vscode/
+
+# Ignore system and temporary files
+.DS_Store
+Thumbs.db
+*.swp
