@@ -39,7 +39,7 @@ class TestRigidBody(unittest.TestCase):
         """
         body = RigidBody(mass=1.0, position=0.0, velocity=0.0)
         body._apply_force(force=1.0)
-        body._update_position(time=1.0)
+        body._update_kinematics(time=1.0)
         self.assertEqual(body.position, 0.5)
         self.assertEqual(body.velocity, 1.0)
 

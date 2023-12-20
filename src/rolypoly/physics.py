@@ -24,9 +24,9 @@ class RigidBody:
 
         Methods
         -------
-        apply_force(force)
+        _apply_force(force)
             Applies force to the body
-        update_position(time)
+        _update_kinematics(time)
             Updates the position of the body
 
         Examples
