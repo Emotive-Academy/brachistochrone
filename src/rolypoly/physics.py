@@ -32,32 +32,28 @@ class RigidBody:
         Examples
         --------
         >>> from rolypoly.physics import RigidBody
-        >>> mass = 1.0
-        >>> position = np.array([0.0, 0.0], dtype=_type_float)
-        >>> velocity = np.array([0.0, 0.0], dtype=_type_float)
-        >>> body = RigidBody(mass, position, velocity)
+        >>> body = RigidBody(mass=1.0, position=0.0, velocity=0.0)
         >>> body.mass
         1.0
         >>> body.position
-        array([0., 0.])
+        0.0
         >>> body.velocity
-        array([0., 0.])
+        0.0
+        >>> body.apply_force(1.0)
         >>> body.acceleration
-        array([0., 0.])
-        >>> force = np.array([0.0, 1.0], dtype=_type_float)
-        >>> body.apply_force(force)
-        >>> body.acceleration
-        array([0., 1.])
-        >>> time = 1.0
-        >>> body.update_position(time)
+        1.0
+        >>> body.update_position(1.0)
         >>> body.position
-        array([0., 1.])
+        0.5
+        >>> body.velocity
+        1.0
     """
     def __init__(
             self,
             mass: _type_float,
-            position: _type_float or np.ndarray,
-            velocity: _type_float or np.ndarray,
+            position: _type_float = 0.0,
+            velocity: _type_float = 0.0,
+            acceleration: _type_float = 0.0,
         ) -> None:
         """
             Parameters
@@ -69,17 +65,10 @@ class RigidBody:
             velocity : ndarray
                 Velocity of the body in meters per second
         """
-        assert isinstance(mass, _type_float), 'mass must be a float'
-        assert isinstance(position, np.ndarray), 'position must be a numpy array'
-        assert isinstance(velocity, np.ndarray), 'velocity must be a numpy array'
-        assert position.dtype == _type_float, 'position must be a float numpy array'
-        assert velocity.dtype == _type_float, 'velocity must be a float numpy array'
         assert mass >= 0.0, 'mass must be a non-negative float'
-        self.mass = mass
-        self.position = position
-        self.velocity = velocity
+        self.__mass, self.__position, self.__velocity, self.__acceleration = mass, position, velocity, acceleration
 
-    def apply_force(self, force: _type_float or np.ndarray) -> None:
+    def _apply_force(self, force: _type_float) -> None:
         """
             Applies force to the body
 
@@ -88,16 +77,59 @@ class RigidBody:
             force : ndarray
                 Force to be applied to the body in Newtons
         """
-        acceleration = force / self.mass
-        self.velocity += acceleration
+        self.__acceleration += force / self.mass 
 
-    def update_position(self, time: _type_float) -> None:
+    def _update_kinematics(self, time: _type_float) -> None:
         """
-            Updates the position of the body
+            Updates the kinematics of the body
 
             Parameters
             ----------
             time : float
                 Time elapsed in seconds
         """
-        self.position += self.velocity * time
+        self.__position += self.__velocity * time
+        self.__velocity += self.__acceleration * time
+        self.__position += self.__acceleration * time ** 2 / 2
+
+    @property
+    def mass(self) -> _type_float:
+        """
+            Mass of the body in kilograms
+        """
+        return self.__mass
+    
+    @property
+    def position(self) -> np.ndarray:
+        """
+            Position of the body in meters
+        """
+        return self.__position
+    
+    @position.setter
+    def position(self, position: _type_float or np.ndarray) -> None:
+        """
+            Sets the position of the body in meters
+        """
+        self.__position = position
+
+    @property
+    def velocity(self) -> np.ndarray:
+        """
+            Velocity of the body in meters per second
+        """
+        return self.__velocity
+    
+    @velocity.setter
+    def velocity(self, velocity: _type_float or np.ndarray) -> None:
+        """
+            Sets the velocity of the body in meters per second
+        """
+        self.__velocity = velocity
+
+    @property
+    def acceleration(self) -> np.ndarray:
+        """
+            Acceleration of the body in meters per second squared
+        """
+        return self.__acceleration
