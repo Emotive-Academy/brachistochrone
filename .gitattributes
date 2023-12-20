@@ -1,0 +1,22 @@
+# Set the default behavior for text files
+* text=auto
+
+# Specify files that should always be treated as binary
+*.jpg binary
+*.png binary
+*.gif binary
+
+# Specify files that should always be treated as text
+*.txt text
+*.md text
+*.java text
+
+# Specify files that should have their line endings normalized
+*.txt eol=lf
+*.md eol=lf
+*.java eol=lf
+
+# Specify files that should have their line endings normalized to CRLF
+*.bat eol=crlf
+*.cmd eol=crlf
+*.html eol=crlf
