@@ -2,6 +2,7 @@
 
 from . import np, _type_float
 
+
 class RigidBody:
     """
         A rigid body is a body that does not deform under external forces.
@@ -49,12 +50,12 @@ class RigidBody:
         1.0
     """
     def __init__(
-            self,
-            mass: _type_float,
-            position: _type_float = 0.0,
-            velocity: _type_float = 0.0,
-            acceleration: _type_float = 0.0,
-        ) -> None:
+        self,
+        mass: _type_float,
+        position: _type_float = 0.0,
+        velocity: _type_float = 0.0,
+        acceleration: _type_float = 0.0,
+    ) -> None:
         """
             Parameters
             ----------
@@ -66,7 +67,8 @@ class RigidBody:
                 Velocity of the body in meters per second
         """
         assert mass >= 0.0, 'mass must be a non-negative float'
-        self.__mass, self.__position, self.__velocity, self.__acceleration = mass, position, velocity, acceleration
+        self.__mass, self.__position, self.__velocity, self.__acceleration = \
+            mass, position, velocity, acceleration
 
     def _apply_force(self, force: _type_float) -> None:
         """
@@ -77,7 +79,7 @@ class RigidBody:
             force : ndarray
                 Force to be applied to the body in Newtons
         """
-        self.__acceleration += force / self.mass 
+        self.__acceleration += force / self.mass
 
     def _update_kinematics(self, time: _type_float) -> None:
         """
@@ -98,14 +100,14 @@ class RigidBody:
             Mass of the body in kilograms
         """
         return self.__mass
-    
+
     @property
     def position(self) -> np.ndarray:
         """
             Position of the body in meters
         """
         return self.__position
-    
+
     @position.setter
     def position(self, position: _type_float or np.ndarray) -> None:
         """
@@ -119,7 +121,7 @@ class RigidBody:
             Velocity of the body in meters per second
         """
         return self.__velocity
-    
+
     @velocity.setter
     def velocity(self, velocity: _type_float or np.ndarray) -> None:
         """
