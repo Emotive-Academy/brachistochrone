@@ -1,6 +1,6 @@
 import unittest
-import numpy as np
 from rolypoly.physics import RigidBody
+
 
 class TestRigidBody(unittest.TestCase):
     """
@@ -42,6 +42,7 @@ class TestRigidBody(unittest.TestCase):
         body._update_kinematics(time=1.0)
         self.assertEqual(body.position, 0.5)
         self.assertEqual(body.velocity, 1.0)
+
 
 if __name__ == '__main__':
     unittest.main()

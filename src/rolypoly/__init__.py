@@ -8,7 +8,8 @@ __author__ = 'Siddhartha Banerjee'
 __license__ = 'GNU GPLv3'
 
 # Description
-__description__ = 'A Python package to calculate slanted plate rolling of balls in 2D plane'
+__description__ = 'A Python package to calculate \
+    slanted plate rolling of balls in 2D plane'
 __unit_system__ = 'SI'
 
 # URL
