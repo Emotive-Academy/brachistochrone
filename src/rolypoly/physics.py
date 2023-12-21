@@ -1,6 +1,6 @@
 # Desc: Physics classes and functions
 
-from . import np, _type_float
+from . import _type_float, _type_array
 
 
 class RigidBody:
@@ -52,21 +52,35 @@ class RigidBody:
     def __init__(
         self,
         mass: _type_float,
-        position: _type_float = 0.0,
-        velocity: _type_float = 0.0,
-        acceleration: _type_float = 0.0,
+        position: _type_float | _type_array = 0.0,
+        velocity: _type_float | _type_array = 0.0,
+        acceleration: _type_float | _type_array = 0.0,
     ) -> None:
         """
             Parameters
             ----------
             mass : float
                 Mass of the body in kilograms
-            position : ndarray
+            position : float or ndarray
                 Position of the body in meters
-            velocity : ndarray
+            velocity : float or ndarray
                 Velocity of the body in meters per second
         """
         assert mass >= 0.0, 'mass must be a non-negative float'
+        try:
+            assert (
+                position.size == 2 | position.size == 3
+                & velocity.size == 2 | velocity.size == 3
+                & acceleration.size == 2 | acceleration.size == 3
+            ), 'position, velocity, and acceleration must be scalars or 3D vectors'
+            assert position.size == velocity.size == acceleration.size, \
+                'position, velocity, and acceleration must be of the same size'
+        except AttributeError:
+            assert (
+                isinstance(position, float) | isinstance(position, int)
+                & isinstance(velocity, float) | isinstance(velocity, int)
+                & isinstance(acceleration, float) | isinstance(acceleration, int)
+            ), 'position, velocity, and acceleration must be scalars or 3D vectors'
         self.__mass, self.__position, self.__velocity, self.__acceleration = \
             mass, position, velocity, acceleration
 
@@ -102,35 +116,35 @@ class RigidBody:
         return self.__mass
 
     @property
-    def position(self) -> np.ndarray:
+    def position(self) -> _type_float | _type_array:
         """
             Position of the body in meters
         """
         return self.__position
 
     @position.setter
-    def position(self, position: _type_float or np.ndarray) -> None:
+    def position(self, position: _type_float | _type_array) -> None:
         """
             Sets the position of the body in meters
         """
         self.__position = position
 
     @property
-    def velocity(self) -> np.ndarray:
+    def velocity(self) -> _type_float | _type_array:
         """
             Velocity of the body in meters per second
         """
         return self.__velocity
 
     @velocity.setter
-    def velocity(self, velocity: _type_float or np.ndarray) -> None:
+    def velocity(self, velocity: _type_float or _type_array) -> None:
         """
             Sets the velocity of the body in meters per second
         """
         self.__velocity = velocity
 
     @property
-    def acceleration(self) -> np.ndarray:
+    def acceleration(self) -> _type_array:
         """
             Acceleration of the body in meters per second squared
         """
