@@ -6,6 +6,7 @@ from . import np, _type_float, _type_array
 GRAVITY: _type_float = 9.80665   # m/s^2
 
 
+
 class RigidBody:
     """
         A rigid body is a body that does not deform under external forces.

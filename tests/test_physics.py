@@ -3,6 +3,7 @@ import numpy as np
 from rolypoly.physics import RigidBody, GRAVITY
 
 
+
 class TestRigidBody(unittest.TestCase):
     """
         This class contains the unit tests for the RigidBody class
@@ -85,6 +86,7 @@ class TestRigidBody(unittest.TestCase):
         self.body2.position, self.body2.velocity = np.array([1, 1]), np.array([10, 10])
         self.assertEqual(self.body1.potential_energy, -GRAVITY)
         self.assertAlmostEqual(self.body2.potential_energy, -GRAVITY)
+
 
 
 if __name__ == '__main__':
