@@ -162,3 +162,10 @@ class RigidBody:
             Acceleration of the body in meters per second squared
         """
         return self.__acceleration
+
+    @property
+    def kinetic_energy(self) -> _type_float:
+        """
+            Kinetic energy of the body in joules
+        """
+        return 0.5 * self.mass * self.velocity ** 2

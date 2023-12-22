@@ -67,11 +67,21 @@ class TestRigidBody(unittest.TestCase):
         self.assertTrue(np.array_equal(self.body2.velocity, np.array([1, 1])))
         self.__position_updated: bool = True
 
+    def test_kinetic_energy(self):
+        """
+            This method tests the kinetic_energy() method of the RigidBody class
+        """
+        self.body1.position, self.body1.velocity = 0.0, 10.0
+        self.body2.position, self.body2.velocity = np.array([0, 0]), np.array([10, 10])
+        self.assertEqual(self.body1.kinetic_energy, 50)
+        self.assertTrue(np.array_equal(self.body2.kinetic_energy, np.array([50, 50])))
+
 
 if __name__ == '__main__':
     suite = unittest.TestSuite()
     suite.addTest(TestRigidBody('test_initialization'))
     suite.addTest(TestRigidBody('test_apply_force'))
     suite.addTest(TestRigidBody('test_update_position'))
+    suite.addTest(TestRigidBody('test_kinetic_energy'))
     runner = unittest.TextTestRunner()
     runner.run(suite)
