@@ -129,21 +129,21 @@ class RigidBody:
         return self.__mass
 
     @property
-    def position(self) -> _type_float | _type_array:
+    def position(self) -> _type_float or _type_array:
         """
             Position of the body in meters
         """
         return self.__position
 
     @position.setter
-    def position(self, position: _type_float | _type_array) -> None:
+    def position(self, position: _type_float or _type_array) -> None:
         """
             Sets the position of the body in meters
         """
         self.__position = position
 
     @property
-    def velocity(self) -> _type_float | _type_array:
+    def velocity(self) -> _type_float or _type_array:
         """
             Velocity of the body in meters per second
         """
