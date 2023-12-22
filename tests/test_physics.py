@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from rolypoly.physics import RigidBody
+from rolypoly.physics import RigidBody, GRAVITY
 
 
 class TestRigidBody(unittest.TestCase):
@@ -17,12 +17,13 @@ class TestRigidBody(unittest.TestCase):
             Tests the update_position() method of the RigidBody class
     """
 
-    body1 = RigidBody(mass=1.0, position=0.0, velocity=0.0)
+    body1 = RigidBody(mass=1.0, position=0.0, velocity=0.0, gravity_vector=-1.0)
     body2 = RigidBody(
         mass=1.0,
         position=np.array([0, 0]),
         velocity=np.array([0, 0]),
         acceleration=np.array([0, 0]),
+        gravity_vector=np.array([0, -1]),
     )
 
     def test_initialization(self):
@@ -74,7 +75,16 @@ class TestRigidBody(unittest.TestCase):
         self.body1.position, self.body1.velocity = 0.0, 10.0
         self.body2.position, self.body2.velocity = np.array([0, 0]), np.array([10, 10])
         self.assertEqual(self.body1.kinetic_energy, 50)
-        self.assertTrue(np.array_equal(self.body2.kinetic_energy, np.array([50, 50])))
+        self.assertAlmostEqual(self.body2.kinetic_energy, 100)
+
+    def test_potential_energy(self):
+        """
+            This method tests the potential_energy() method of the RigidBody class
+        """
+        self.body1.position, self.body1.velocity = 1.0, 10.0
+        self.body2.position, self.body2.velocity = np.array([1, 1]), np.array([10, 10])
+        self.assertEqual(self.body1.potential_energy, -GRAVITY)
+        self.assertAlmostEqual(self.body2.potential_energy, -GRAVITY)
 
 
 if __name__ == '__main__':

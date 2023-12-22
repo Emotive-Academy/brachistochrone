@@ -1,6 +1,9 @@
 # Desc: Physics classes and functions
 
-from . import _type_float, _type_array
+from . import np, _type_float, _type_array
+
+
+GRAVITY: _type_float = 9.80665   # m/s^2
 
 
 class RigidBody:
@@ -23,6 +26,8 @@ class RigidBody:
             Velocity of the body
         acceleration : ndarray
             Acceleration of the body
+        gravity_vector : ndarray
+            Gravity unit vector of the body. This will be normalized to 1.
 
         Methods
         -------
@@ -56,6 +61,7 @@ class RigidBody:
         position: _type_float or _type_array = 0.0,
         velocity: _type_float or _type_array = 0.0,
         acceleration: _type_float or _type_array = 0.0,
+        gravity_vector: _type_float or _type_array = 0.0,
     ) -> None:
         """
             Parameters
@@ -66,13 +72,21 @@ class RigidBody:
                 Position of the body in meters
             velocity : float or ndarray
                 Velocity of the body in meters per second
+            acceleration : float or ndarray
+                Acceleration of the body in meters per second squared
+            gravity_vector : float or ndarray
+                Gravity unit vector of the body
         """
         assert mass >= 0.0, 'mass must be a non-negative float'
         try:
             assert (
                 position.ndim == 1 and velocity.ndim == 1 and acceleration.ndim == 1
+                and gravity_vector.ndim == 1
                 and position.size <= 3 and velocity.size <= 3 and acceleration.size <= 3
-                and position.size == velocity.size == acceleration.size
+                and gravity_vector.size <= 3
+                and (
+                    position.size == velocity.size == acceleration.size
+                    == gravity_vector.size)
             ), 'position, velocity, and acceleration must be scalars or 3D vectors'
             self.__dim = int(position.size)
         except AttributeError:
@@ -82,6 +96,22 @@ class RigidBody:
                 and isinstance(acceleration, float)
             ), 'position, velocity, and acceleration must be scalars or 3D vectors'
             self.__dim = int(1)
+        match self.__dim:
+            case 1:
+                match gravity_vector:
+                    case 0.0:
+                        self.__gravity = 0.0
+                    case _:
+                        self.__gravity = gravity_vector / abs(gravity_vector) \
+                            * GRAVITY
+            case _:
+                if np.array_equal(gravity_vector, np.zeros_like(position)):
+                    self.__gravity = np.zeros_like(position)
+                else:
+                    self.__gravity = GRAVITY * (
+                        gravity_vector
+                        / np.linalg.norm(gravity_vector)
+                    )
         self.__mass, self.__position, self.__velocity, self.__acceleration = \
             _type_float(mass), position, velocity, acceleration
         if self.__dim > 1:
@@ -168,4 +198,17 @@ class RigidBody:
         """
             Kinetic energy of the body in joules
         """
-        return 0.5 * self.mass * self.velocity ** 2
+        if self.__dim == 1:
+            return 0.5 * self.mass * np.linalg.norm(self.velocity) ** 2
+        else:
+            return 0.5 * self.mass * np.linalg.norm(self.velocity) ** 2
+
+    @property
+    def potential_energy(self) -> _type_float:
+        """
+            Potential energy of the body in joules
+        """
+        if self.__dim == 1:
+            return self.mass * self.__gravity * self.position
+        else:
+            return self.mass * np.dot(self.__gravity, self.position)
