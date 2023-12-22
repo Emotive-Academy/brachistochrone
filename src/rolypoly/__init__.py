@@ -26,6 +26,7 @@ import numpy as np
 
 # Default values
 _type_float = np.float64
+_type_array = np.ndarray
 _type_int = np.int64
 _type_bool = np.bool_
 _type_str = np.str_

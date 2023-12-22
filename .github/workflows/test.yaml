@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - develop 
+      - chore/*
+      - feature/*
+      - fix/*
+      - release/*
+      - bug/*
+      - hotfix/*
   pull_request:
     branches:
       - main
