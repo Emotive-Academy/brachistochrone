@@ -3,7 +3,7 @@
 from . import np, _type_float, _type_array
 
 
-_GRAVITY: _type_float = 9.80665   # m/s^2
+_GRAVITY = 9.80665   # m/s^2
 
 
 class RigidBody:
