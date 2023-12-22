@@ -11,6 +11,7 @@ class RigidBody:
         Description
         -----------
         RigidBody is a class that describes the motion of a rigid body.
+        Give the position, velocity and acceleration based on cartesian coordinates.
 
         Attributes
         ----------
@@ -52,9 +53,9 @@ class RigidBody:
     def __init__(
         self,
         mass: _type_float,
-        position: _type_float | _type_array = 0.0,
-        velocity: _type_float | _type_array = 0.0,
-        acceleration: _type_float | _type_array = 0.0,
+        position: _type_float or _type_array = 0.0,
+        velocity: _type_float or _type_array = 0.0,
+        acceleration: _type_float or _type_array = 0.0,
     ) -> None:
         """
             Parameters
@@ -69,22 +70,25 @@ class RigidBody:
         assert mass >= 0.0, 'mass must be a non-negative float'
         try:
             assert (
-                position.size == 2 | position.size == 3
-                & velocity.size == 2 | velocity.size == 3
-                & acceleration.size == 2 | acceleration.size == 3
+                position.ndim == 1 and velocity.ndim == 1 and acceleration.ndim == 1
+                and position.size <= 3 and velocity.size <= 3 and acceleration.size <= 3
+                and position.size == velocity.size == acceleration.size
             ), 'position, velocity, and acceleration must be scalars or 3D vectors'
-            assert position.size == velocity.size == acceleration.size, \
-                'position, velocity, and acceleration must be of the same size'
+            self.__dim = int(position.size)
         except AttributeError:
             assert (
-                isinstance(position, float) | isinstance(position, int)
-                & isinstance(velocity, float) | isinstance(velocity, int)
-                & isinstance(acceleration, float) | isinstance(acceleration, int)
+                isinstance(position, float)
+                and isinstance(velocity, float)
+                and isinstance(acceleration, float)
             ), 'position, velocity, and acceleration must be scalars or 3D vectors'
+            self.__dim = int(1)
         self.__mass, self.__position, self.__velocity, self.__acceleration = \
-            mass, position, velocity, acceleration
+            _type_float(mass), position, velocity, acceleration
+        if self.__dim > 1:
+            self.__position, self.__velocity, self.__acceleration = \
+                _type_float(position), _type_float(velocity), _type_float(acceleration)
 
-    def _apply_force(self, force: _type_float) -> None:
+    def _apply_force(self, force: _type_float or _type_array) -> None:
         """
             Applies force to the body
 
@@ -93,7 +97,7 @@ class RigidBody:
             force : ndarray
                 Force to be applied to the body in Newtons
         """
-        self.__acceleration += force / self.mass
+        self.__acceleration = force / self.mass
 
     def _update_kinematics(self, time: _type_float) -> None:
         """
@@ -104,9 +108,18 @@ class RigidBody:
             time : float
                 Time elapsed in seconds
         """
-        self.__position += self.__velocity * time
-        self.__velocity += self.__acceleration * time
-        self.__position += self.__acceleration * time ** 2 / 2
+        try:
+            self.__position += self.__velocity * time
+            self.__velocity += self.__acceleration * time
+            self.__position += self.__acceleration * time ** 2 / 2
+        except: # noqa: E722, E261
+            self.__position = self.__position.astype(float)
+            self.__velocity = self.__velocity.astype(float)
+            self.__acceleration = self.__acceleration.astype(float)
+            time = float(time)
+            self.__position += (self.__velocity * time)
+            self.__velocity += (self.__acceleration * time)
+            self.__position += (self.__acceleration * time ** 2 / 2)
 
     @property
     def mass(self) -> _type_float:
