@@ -3,7 +3,7 @@
 from . import np, _type_float, _type_array
 
 
-GRAVITY: _type_float = 9.80665   # m/s^2
+_GRAVITY: _type_float = 9.80665   # m/s^2
 
 
 class RigidBody:
@@ -103,12 +103,12 @@ class RigidBody:
                         self.__gravity = 0.0
                     case _:
                         self.__gravity = gravity_vector / abs(gravity_vector) \
-                            * GRAVITY
+                            * _GRAVITY
             case _:
                 if np.array_equal(gravity_vector, np.zeros_like(position)):
                     self.__gravity = np.zeros_like(position)
                 else:
-                    self.__gravity = GRAVITY * (
+                    self.__gravity = _GRAVITY * (
                         gravity_vector
                         / np.linalg.norm(gravity_vector)
                     )
